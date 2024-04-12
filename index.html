@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocalización con ArcGIS</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Buscar Geolocalización</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="locationInput" placeholder="Ingresa el nombre de la ciudad o pueblo" onkeypress="handleKeyPress(event)">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary" onclick="searchLocation()">Buscar</button>
+            </div>
+        </div>
+        <div id="result" class="mt-4"></div>
+    </div>
+
+    <script>
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                searchLocation();
+            }
+        }
+
+        function searchLocation() {
+            var location = document.getElementById("locationInput").value;
+            var url = "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?f=json&singleLine=" + location;
+
+            fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.candidates && data.candidates.length > 0) {
+                    var latitude = data.candidates[0].location.y.toString().replace('.', ',');
+                    var longitude = data.candidates[0].location.x.toString().replace('.', ',');
+                    var coordinates = latitude + ", " + longitude;
+                    document.getElementById("result").innerHTML = "<h2 class='d-inline-block'>" + "[" + latitude + "]" + " - " + "[" + longitude + "]" + "</h2> <button class='btn btn-success ml-2' onclick='copyCoordinates(\"" + coordinates + "\")'>Copiar</button>";
+                } else {
+                    document.getElementById("result").innerHTML = "No se encontraron resultados para la ubicación ingresada.";
+                }
+            })
+            .catch(error => {
+                console.error('Error al buscar la geolocalización:', error);
+                document.getElementById("result").innerHTML = "Ocurrió un error al buscar la geolocalización. Por favor, intenta nuevamente.";
+            });
+        }
+
+        function copyCoordinates(coordinates) {
+            var tempInput = document.createElement("input");
+            tempInput.value = coordinates;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+        }
+    </script>
+</body>
+</html>
