@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geolocalización con ArcGIS</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-
 </head>
 <body>
-    <div class="container center-container">
-        <h1 class="text-center">Buscar Geolocalización</h1>
+    <div class="container">
+        <h1>Buscar Geolocalización</h1>
+        <br />
         <div class="row justify-content-center">
             <div class="col-md-4">
                 <input type="text" class="form-control" id="cityInput" placeholder="Ciudad">
@@ -22,10 +21,17 @@
                 <button class="btn btn-primary" onclick="searchLocation()">Buscar</button>
             </div>
         </div>
-        <div id="result" class="mt-4"></div>
+        <hr/>
+        <div class="row justify-content-center" id="result" class="mt-4"></div>
     </div>
 
     <script>
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                searchLocation();
+            }
+        }
+
         function searchLocation() {
             var city = document.getElementById("cityInput").value;
             var department = document.getElementById("departmentInput").value;
@@ -58,6 +64,6 @@
             document.execCommand("copy");
             document.body.removeChild(tempInput);
         }
-    </script>    
+    </script>
 </body>
 </html>
